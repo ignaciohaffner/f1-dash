@@ -1,6 +1,9 @@
 services:
   api:
-    image: ghcr.io/slowlydev/f1-dash-api:latest
+    build:
+      context: .
+      dockerfile: dockerfile
+      target: api
     restart: unless-stopped
     environment:
       - RUST_LOG=api=info
