@@ -28,6 +28,14 @@ const liveTimingItems = [
 		name: "Standings",
 	},
 	{
+		href: "/dashboard/tyre-strategy",
+		name: "Tyre Strategy",
+	},
+	{
+		href: "/dashboard/lap-times",
+		name: "Lap Times",
+	},
+	{
 		href: "/dashboard/weather",
 		name: "Weather",
 	},

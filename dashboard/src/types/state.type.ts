@@ -1,3 +1,14 @@
+export type LapHistoryEntry = {
+	lap: number;
+	time: string;
+	overallFastest: boolean;
+	personalFastest: boolean;
+};
+
+export type LapHistory = {
+	[driverNr: string]: LapHistoryEntry[];
+};
+
 export type State = {
 	Heartbeat?: Heartbeat;
 	ExtrapolatedClock?: ExtrapolatedClock;
@@ -15,6 +26,7 @@ export type State = {
 	TimingData?: TimingData;
 	TeamRadio?: TeamRadio;
 	ChampionshipPrediction?: ChampionshipPrediction;
+	LapHistory?: LapHistory;
 };
 
 export type Heartbeat = {

@@ -15,7 +15,7 @@ COPY api api
 COPY simulator simulator
 
 FROM builder-base AS builder
-RUN cargo b -r
+RUN cargo b -r --workspace
 
 
 FROM alpine:3 AS api
@@ -26,3 +26,8 @@ CMD [ "/api" ]
 FROM alpine:3 AS realtime
 COPY --from=builder /usr/src/app/target/release/realtime .
 CMD [ "/realtime" ]
+
+
+FROM alpine:3 AS simulator
+COPY --from=builder /usr/src/app/target/release/simulator .
+ENTRYPOINT [ "/simulator" ]

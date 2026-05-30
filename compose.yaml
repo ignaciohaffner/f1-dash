@@ -7,15 +7,33 @@ services:
       - ADDRESS=0.0.0.0:80
       - ORIGIN=${FRONTEND_URL}
 
+  simulator:
+    build:
+      context: .
+      dockerfile: dockerfile
+      target: simulator
+    restart: unless-stopped
+    volumes:
+      - ./mock-session.jsonl:/data/session.jsonl
+    environment:
+      - ADDRESS=0.0.0.0:3001
+    command: ["replay", "/data/session.jsonl"]
+
   realtime:
-    image: ghcr.io/slowlydev/f1-dash-realtime:latest
+    build:
+      context: .
+      dockerfile: dockerfile
+      target: realtime
     restart: unless-stopped
     ports:
       - "4000:80"
+    depends_on:
+      - simulator
     environment:
       - RUST_LOG=realtime=info
       - ADDRESS=0.0.0.0:80
       - ORIGIN=${FRONTEND_URL}
+      - F1_DEV_URL=ws://simulator:3001/ws
 
   web:
     build:

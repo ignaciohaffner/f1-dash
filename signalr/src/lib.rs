@@ -65,6 +65,17 @@ pub struct SignalrClient {
 }
 
 pub async fn create_client(url: &str, hub: &str) -> Result<SignalrClient, anyhow::Error> {
+    if let Some(dev_url) = env::var_os("F1_DEV_URL") {
+        let dev_url = Url::from_str(&dev_url.into_string().unwrap())?;
+        info!(url = %dev_url, "connecting to dev url (skipping negotiate)");
+        let req: Request<()> = dev_url.into_client_request()?;
+        let (stream, _) = tokio_tungstenite::connect_async(req).await?;
+        return Ok(SignalrClient {
+            hub: hub.to_string(),
+            stream,
+        });
+    }
+
     let negotiation = negotiate(url, hub).await?;
 
     let url = Url::parse_with_params(
@@ -75,11 +86,6 @@ pub async fn create_client(url: &str, hub: &str) -> Result<SignalrClient, anyhow
             ("connectionToken", &negotiation.token),
         ],
     )?;
-
-    let url = match env::var_os("F1_DEV_URL") {
-        Some(env_url) => Url::from_str(&env_url.into_string().unwrap())?,
-        None => url,
-    };
 
     info!("connecting to {url}");
 

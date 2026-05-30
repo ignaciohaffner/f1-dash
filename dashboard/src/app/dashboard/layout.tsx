@@ -7,6 +7,7 @@ import { useDataEngine } from '@/hooks/useDataEngine';
 import { useWakeLock } from '@/hooks/useWakeLock';
 import { useStores } from '@/hooks/useStores';
 import { useSocket } from '@/hooks/useSocket';
+import { useHistoryEngine } from '@/hooks/useHistoryEngine';
 
 import { useSettingsStore } from '@/stores/useSettingsStore';
 import { useSidebarStore } from '@/stores/useSidebarStore';
@@ -29,6 +30,7 @@ export default function DashboardLayout({ children }: Props) {
 	const stores = useStores();
 	const { handleInitial, handleUpdate, maxDelay } = useDataEngine(stores);
 	const { connected } = useSocket({ handleInitial, handleUpdate });
+	useHistoryEngine();
 
 	const delay = useSettingsStore((state) => state.delay);
 	const syncing = delay > maxDelay;
